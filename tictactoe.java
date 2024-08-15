@@ -45,8 +45,43 @@ class HelloWorld {
         }
         board[posx-1][posy-1]=x;
         System.out.println();
+        print();
         return true;
     }
+    static void print(){
+        for(int i=0; i<3; i++){
+            for(int j=0; j<3; j++){
+                switch(board[i][j]){
+                    case 0:System.out.print("[ ] ");break;
+                    case 2:System.out.print("[O] ");break;
+                    case 1:System.out.print("[X] ");break;
+                    default:break;
+                }
+            }
+            System.out.println();
+        }
+    }
     public static void main(String[] args){
+        Scanner s=new Scanner(System.in);
+        int cur=1;
+        for(int i=0; i<9; i++){
+            System.out.println("Player "+cur+"\'s turn ");
+            System.out.print("Enter move: (Row Column)");
+            int r,c;
+            r=s.nextInt();
+            c=s.nextInt();
+            boolean x=move(cur,r,c);
+            if(!x){
+                System.out.println("Block already filled!");
+                i--;
+                continue;
+            }
+            if(win(cur)){
+                System.out.println("Player "+cur+" wins");
+                return;
+            }
+            cur=(cur==1)?2:1;
+        }
+        System.out.println("Draw!");
     }
 }
