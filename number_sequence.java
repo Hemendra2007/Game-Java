@@ -28,11 +28,30 @@ public class NumberSequencingGame {
             System.out.print(num + " ");
         }
         System.out.println();
+
         try {
             Thread.sleep(displayTime);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println("Error: Interrupted while displaying sequence.");
+        }
+
+        // Clear console by printing new lines
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+    }
+
+    public static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception e) {
+            System.err.println("Error: Unable to clear console.");
         }
     }
 
@@ -62,6 +81,14 @@ public class NumberSequencingGame {
         averageScore = ((averageScore * (totalGames - 1)) + rounds) / totalGames;
     }
 
+    private static int getValidatedIntInput(Scanner scanner) {
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter an integer.");
+            scanner.next(); // clear the invalid input
+        }
+        return scanner.nextInt();
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -69,7 +96,7 @@ public class NumberSequencingGame {
         while (running) {
             printMenu();
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
+            int choice = getValidatedIntInput(scanner);
 
             switch (choice) {
                 case 1:
@@ -79,9 +106,9 @@ public class NumberSequencingGame {
 
                     while (continuePlaying) {
                         System.out.println("Choose difficulty level: 1) Easy 2) Medium 3) Hard");
-                        int difficulty = scanner.nextInt();
+                        int difficulty = getValidatedIntInput(scanner);
                         int displayTime = 2000; // Default 2 seconds
-                        int hintSize = 2; 
+                        int hintSize = 2;
                         switch (difficulty) {
                             case 1: displayTime = 3000; hintSize = 3; break; // Easy: 3 seconds
                             case 2: displayTime = 2000; hintSize = 2; break; // Medium: 2 seconds
@@ -96,11 +123,7 @@ public class NumberSequencingGame {
                         System.out.println("Enter your guess (" + length + " numbers):");
 
                         for (int i = 0; i < length; i++) {
-                            while (!scanner.hasNextInt()) {
-                                System.out.println("Invalid input. Please enter an integer.");
-                                scanner.next(); // clear the invalid input
-                            }
-                            userGuess.add(scanner.nextInt());
+                            userGuess.add(getValidatedIntInput(scanner));
                         }
 
                         if (sequence.equals(userGuess)) {
