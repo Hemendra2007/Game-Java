@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -8,6 +9,9 @@ public class NumberSequencingGame {
     private static final int INITIAL_LENGTH = 3;
     private static List<Integer> sequence;
     private static int highScore = 0;
+    private static List<Integer> highScores = new ArrayList<>();
+    private static double averageScore = 0.0;
+    private static int totalGames = 0;
 
     public static List<Integer> generateSequence(int length) {
         List<Integer> seq = new ArrayList<>();
@@ -25,12 +29,11 @@ public class NumberSequencingGame {
         }
         System.out.println();
         try {
-            Thread.sleep(displayTime); 
+            Thread.sleep(displayTime);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            System.err.println("Error: Interrupted while displaying sequence.");
         }
-        System.out.print("\033[H\033[2J"); // Clear screen 
-        System.out.flush();
     }
 
     public static void showHint(List<Integer> sequence, int hintSize) {
@@ -41,7 +44,22 @@ public class NumberSequencingGame {
         System.out.println("Number Sequencing Game");
         System.out.println("1. Start New Game");
         System.out.println("2. Show High Score");
-        System.out.println("3. Exit");
+        System.out.println("3. Show Average Score");
+        System.out.println("4. Show Leaderboard");
+        System.out.println("5. Exit");
+    }
+
+    private static void showLeaderboard() {
+        System.out.println("Leaderboard:");
+        Collections.sort(highScores, Collections.reverseOrder()); // Sort high scores in descending order
+        for (int i = 0; i < Math.min(highScores.size(), 10); i++) {
+            System.out.println((i + 1) + ". " + highScores.get(i));
+        }
+    }
+
+    private static void updateAverageScore(int rounds) {
+        totalGames++;
+        averageScore = ((averageScore * (totalGames - 1)) + rounds) / totalGames;
     }
 
     public static void main(String[] args) {
@@ -94,9 +112,12 @@ public class NumberSequencingGame {
                             }
                         } else {
                             System.out.println("Incorrect. The sequence was " + sequence);
-                            showHint(sequence, hintSize); //hint
+                            showHint(sequence, hintSize); // hint
                             System.out.println("Game Over. You played " + rounds + " rounds.");
                             System.out.println("Your highest score is " + highScore + ".");
+                            updateAverageScore(rounds);
+                            System.out.println("Your average score is " + averageScore + ".");
+                            highScores.add(rounds); // Add score to leaderboard
                             System.out.println("Would you like to play again? (yes/no)");
                             String response = scanner.next().toLowerCase();
                             if (!response.equals("yes")) {
@@ -111,6 +132,12 @@ public class NumberSequencingGame {
                     System.out.println("High Score: " + highScore);
                     break;
                 case 3:
+                    System.out.println("Average Score: " + averageScore);
+                    break;
+                case 4:
+                    showLeaderboard();
+                    break;
+                case 5:
                     System.out.println("Exiting the game. Goodbye!");
                     running = false;
                     break;
