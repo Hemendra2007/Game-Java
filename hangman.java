@@ -11,36 +11,58 @@ public class Hangman {
     private static Set<Character> guessedLetters;
     private static Set<Character> incorrectGuesses;
     private static int attemptsRemaining;
+    private static int gamesWon = 0;
+    private static int gamesLost = 0;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        initializeGame();
+        boolean playAgain = true;
 
-        while (attemptsRemaining > 0 && !guessedWord.toString().equals(wordToGuess)) {
-            System.out.println("Word to guess: " + guessedWord);
-            System.out.println("Incorrect guesses: " + incorrectGuesses);
-            System.out.println("Attempts remaining: " + attemptsRemaining);
-            System.out.print("Enter a letter (or type 'hint' for a hint): ");
-            String input = scanner.next().toLowerCase();
+        while (playAgain) {
+            initializeGame();
 
-            if (input.equals("hint")) {
-                provideHint();
-            } else {
-                char guess = input.charAt(0);
-                if (processGuess(guess)) {
-                    System.out.println("Correct guess!");
+            while (attemptsRemaining > 0 && !guessedWord.toString().equals(wordToGuess)) {
+                System.out.println("Word to guess: " + guessedWord);
+                System.out.println("Incorrect guesses: " + incorrectGuesses);
+                System.out.println("Attempts remaining: " + attemptsRemaining);
+                System.out.println("Letters remaining to guess: " + getRemainingLetters());
+                System.out.print("Enter a letter (or type 'hint' for a hint): ");
+                String input = scanner.next().toLowerCase();
+
+                if (input.equals("hint")) {
+                    provideHint();
+                } else if (input.length() == 1) {
+                    char guess = input.charAt(0);
+                    if (processGuess(guess)) {
+                        System.out.println("Correct guess!");
+                    } else {
+                        System.out.println("Incorrect guess.");
+                        attemptsRemaining--;
+                    }
                 } else {
-                    System.out.println("Incorrect guess.");
-                    attemptsRemaining--;
+                    System.out.println("Please enter a single letter.");
                 }
             }
+
+            if (guessedWord.toString().equals(wordToGuess)) {
+                System.out.println("Congratulations! You've guessed the word: " + wordToGuess);
+                gamesWon++;
+            } else {
+                System.out.println("Game over! The word was: " + wordToGuess);
+                gamesLost++;
+            }
+
+            System.out.println("Games won: " + gamesWon);
+            System.out.println("Games lost: " + gamesLost);
+
+            System.out.print("Do you want to play again? (yes/no): ");
+            String response = scanner.next().toLowerCase();
+            playAgain = response.equals("yes");
         }
 
-        if (guessedWord.toString().equals(wordToGuess)) {
-            System.out.println("Congratulations! You've guessed the word: " + wordToGuess);
-        } else {
-            System.out.println("Game over! The word was: " + wordToGuess);
-        }
+        System.out.println("Thank you for playing! Final score:");
+        System.out.println("Games won: " + gamesWon);
+        System.out.println("Games lost: " + gamesLost);
         scanner.close();
     }
 
@@ -92,5 +114,15 @@ public class Hangman {
         } else {
             System.out.println("No hints available.");
         }
+    }
+
+    private static String getRemainingLetters() {
+        Set<Character> remainingLetters = new HashSet<>();
+        for (char c : wordToGuess.toCharArray()) {
+            if (!guessedLetters.contains(c) && !incorrectGuesses.contains(c)) {
+                remainingLetters.add(c);
+            }
+        }
+        return remainingLetters.toString();
     }
 }
