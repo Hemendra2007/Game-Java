@@ -30,11 +30,18 @@ To get started with any of the games, follow these instructions.
 
 # Hangman
 A classic word-guessing game where players try to guess the letters of a hidden word. Features include difficulty levels and hint options.
+![image](https://github.com/user-attachments/assets/1c1e706e-544e-425b-8bf4-544834172be8)
+![image](https://github.com/user-attachments/assets/0f4a6ed6-ed46-4416-aa21-4fb10ac73c70)
+
 
 # Number Sequencing Game
 A memory game where players must memorize and recall a sequence of numbers. The game includes a scoring system and a leaderboard.
+![image](https://github.com/user-attachments/assets/a4ccf1a7-4894-4648-9d90-149d7b2fb28d)
+![image](https://github.com/user-attachments/assets/d08e9482-d55a-4ee0-9fb4-268322f9d559)
+
 
 # Tic-Tac-Toe
 A two-player game where players take turns marking cells in a 3x3 grid. The first player to get three of their marks in a row, column, or diagonal wins.
+![image](https://github.com/user-attachments/assets/79de8174-04d1-4608-aae7-f20757fc29b0)
 
    
