@@ -5,7 +5,11 @@ import java.util.Random;
 
 public class Hangman {
 
-    private static final String[] WORDS = {"java", "hangman", "programming", "developer", "code"};
+    private static final String[] EASY_WORDS = {"java", "code", "debug"};
+    private static final String[] MEDIUM_WORDS = {"hangman", "python", "arrays"};
+    private static final String[] HARD_WORDS = {"programming", "development", "exception"};
+    
+    private static String[] currentWordList;
     private static String wordToGuess;
     private static StringBuilder guessedWord;
     private static Set<Character> guessedLetters;
@@ -18,14 +22,15 @@ public class Hangman {
         Scanner scanner = new Scanner(System.in);
         boolean playAgain = true;
 
+        System.out.println("Welcome to Hangman!");
+
         while (playAgain) {
+            chooseDifficulty(scanner);
+
             initializeGame();
 
             while (attemptsRemaining > 0 && !guessedWord.toString().equals(wordToGuess)) {
-                System.out.println("Word to guess: " + guessedWord);
-                System.out.println("Incorrect guesses: " + incorrectGuesses);
-                System.out.println("Attempts remaining: " + attemptsRemaining);
-                System.out.println("Letters remaining to guess: " + getRemainingLetters());
+                displayGameStatus();
                 System.out.print("Enter a letter (or type 'hint' for a hint): ");
                 String input = scanner.next().toLowerCase();
 
@@ -44,16 +49,7 @@ public class Hangman {
                 }
             }
 
-            if (guessedWord.toString().equals(wordToGuess)) {
-                System.out.println("Congratulations! You've guessed the word: " + wordToGuess);
-                gamesWon++;
-            } else {
-                System.out.println("Game over! The word was: " + wordToGuess);
-                gamesLost++;
-            }
-
-            System.out.println("Games won: " + gamesWon);
-            System.out.println("Games lost: " + gamesLost);
+            concludeGame();
 
             System.out.print("Do you want to play again? (yes/no): ");
             String response = scanner.next().toLowerCase();
@@ -66,14 +62,49 @@ public class Hangman {
         scanner.close();
     }
 
+    private static void chooseDifficulty(Scanner scanner) {
+        System.out.println("Choose difficulty level:");
+        System.out.println("1. Easy");
+        System.out.println("2. Medium");
+        System.out.println("3. Hard");
+        System.out.print("Enter your choice (1, 2, or 3): ");
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                currentWordList = EASY_WORDS;
+                attemptsRemaining = 8; // More attempts for easier words
+                break;
+            case 2:
+                currentWordList = MEDIUM_WORDS;
+                attemptsRemaining = 6;
+                break;
+            case 3:
+                currentWordList = HARD_WORDS;
+                attemptsRemaining = 4; // Fewer attempts for harder words
+                break;
+            default:
+                System.out.println("Invalid choice. Defaulting to Easy.");
+                currentWordList = EASY_WORDS;
+                attemptsRemaining = 8;
+                break;
+        }
+    }
+
     private static void initializeGame() {
         Random random = new Random();
-        int index = random.nextInt(WORDS.length);
-        wordToGuess = WORDS[index];
+        int index = random.nextInt(currentWordList.length);
+        wordToGuess = currentWordList[index];
         guessedWord = new StringBuilder("_".repeat(wordToGuess.length()));
         guessedLetters = new HashSet<>();
         incorrectGuesses = new HashSet<>();
-        attemptsRemaining = 6; // Number of attempts
+    }
+
+    private static void displayGameStatus() {
+        System.out.println("Word to guess: " + guessedWord);
+        System.out.println("Incorrect guesses: " + incorrectGuesses);
+        System.out.println("Attempts remaining: " + attemptsRemaining);
+        System.out.println("Letters remaining to guess: " + getRemainingLetters());
     }
 
     private static boolean processGuess(char guess) {
@@ -124,5 +155,18 @@ public class Hangman {
             }
         }
         return remainingLetters.toString();
+    }
+
+    private static void concludeGame() {
+        if (guessedWord.toString().equals(wordToGuess)) {
+            System.out.println("Congratulations! You've guessed the word: " + wordToGuess);
+            gamesWon++;
+        } else {
+            System.out.println("Game over! The word was: " + wordToGuess);
+            gamesLost++;
+        }
+
+        System.out.println("Games won: " + gamesWon);
+        System.out.println("Games lost: " + gamesLost);
     }
 }
