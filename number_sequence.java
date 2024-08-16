@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class NumberSequencingGame {
@@ -5,13 +8,13 @@ public class NumberSequencingGame {
     private static final int INITIAL_LENGTH = 3;
     private static List<Integer> sequence;
 
-    public static List<Integer> generateSequence() {
-        sequence = new ArrayList<>();
+    public static List<Integer> generateSequence(int length) {
+        List<Integer> seq = new ArrayList<>();
         Random random = new Random();
-        for (int i = 0; i < INITIAL_LENGTH; i++) {
-            sequence.add(random.nextInt(10));
+        for (int i = 0; i < length; i++) {
+            seq.add(random.nextInt(10));
         }
-        return sequence;
+        return seq;
     }
 
     public static void displaySequence(List<Integer> sequence) {
@@ -31,19 +34,36 @@ public class NumberSequencingGame {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        sequence = generateSequence();
-        displaySequence(sequence);
+        int length = INITIAL_LENGTH;
+        boolean continuePlaying = true;
 
-        List<Integer> userGuess = new ArrayList<>();
-        System.out.println("Enter your guess (3 numbers):");
-        for (int i = 0; i < INITIAL_LENGTH; i++) {
-            userGuess.add(scanner.nextInt());
-        }
+        while (continuePlaying) {
+            sequence = generateSequence(length);
+            displaySequence(sequence);
 
-        if (sequence.equals(userGuess)) {
-            System.out.println("Correct!");
-        } else {
-            System.out.println("Incorrect. The sequence was " + sequence);
+            List<Integer> userGuess = new ArrayList<>();
+            System.out.println("Enter your guess (" + length + " numbers):");
+
+            for (int i = 0; i < length; i++) {
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input. Please enter an integer.");
+                    scanner.next(); // clear the invalid input
+                }
+                userGuess.add(scanner.nextInt());
+            }
+
+            if (sequence.equals(userGuess)) {
+                System.out.println("Correct! Moving to the next round.");
+                length++;
+            } else {
+                System.out.println("Incorrect. The sequence was " + sequence);
+                System.out.println("Game Over. Would you like to play again? (yes/no)");
+                String response = scanner.next().toLowerCase();
+                if (!response.equals("yes")) {
+                    continuePlaying = false;
+                }
+                length = INITIAL_LENGTH; // Reset
+            }
         }
         scanner.close();
     }
