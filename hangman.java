@@ -104,7 +104,6 @@ public class Hangman {
         System.out.println("Word to guess: " + guessedWord);
         System.out.println("Incorrect guesses: " + incorrectGuesses);
         System.out.println("Attempts remaining: " + attemptsRemaining);
-        System.out.println("Letters remaining to guess: " + getRemainingLetters());
     }
 
     private static boolean processGuess(char guess) {
@@ -145,16 +144,6 @@ public class Hangman {
         } else {
             System.out.println("No hints available.");
         }
-    }
-
-    private static String getRemainingLetters() {
-        Set<Character> remainingLetters = new HashSet<>();
-        for (char c : wordToGuess.toCharArray()) {
-            if (!guessedLetters.contains(c) && !incorrectGuesses.contains(c)) {
-                remainingLetters.add(c);
-            }
-        }
-        return remainingLetters.toString();
     }
 
     private static void concludeGame() {
